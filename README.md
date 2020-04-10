@@ -1,6 +1,12 @@
+# uniot-crypto
+This repository is part of the [Uniot](https://github.com/uniot-io) project. All necessary changes have been made so that it can exist as a module for the [uniot-core](https://github.com/uniot-io/uniot-core).
+
+Original repository: [arduinolibs](https://github.com/rweather/arduinolibs)
+
+The following is the original readme.
 
 Arduino Cryptography Library
-============================
+----------------------------
 
 This distribution contains a libraries and example applications to perform
 cryptography operations on Arduino devices.  They are distributed under the
