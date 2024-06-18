@@ -20,42 +20,21 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef CRYPTO_HASH_h
-#define CRYPTO_HASH_h
+#ifndef CRYPTO_SHA384_h
+#define CRYPTO_SHA384_h
 
-#include <inttypes.h>
-#include <stddef.h>
+#include "SHA512.h"
 
-class Hash
+class SHA384 : public SHA512
 {
 public:
-    Hash();
-    virtual ~Hash();
+    SHA384();
 
-    virtual size_t hashSize() const = 0;
-    virtual size_t blockSize() const = 0;
+    size_t hashSize() const;
 
-    virtual void reset() = 0;
-    virtual void update(const void *data, size_t len) = 0;
-    virtual void finalize(void *hash, size_t len) = 0;
+    void reset();
 
-    virtual void clear() = 0;
-
-    virtual void resetHMAC(const void *key, size_t keyLen) = 0;
-    virtual void finalizeHMAC(const void *key, size_t keyLen, void *hash, size_t hashLen) = 0;
-
-protected:
-    void formatHMACKey(void *block, const void *key, size_t len, uint8_t pad);
+    static const size_t HASH_SIZE = 48;
 };
-
-template <typename T> void hmac
-    (void *out, size_t outLen, const void *key, size_t keyLen,
-     const void *data, size_t dataLen)
-{
-    T context;
-    context.resetHMAC(key, keyLen);
-    context.update(data, dataLen);
-    context.finalizeHMAC(key, keyLen, out, outLen);
-}
 
 #endif

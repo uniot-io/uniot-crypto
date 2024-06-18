@@ -21,64 +21,58 @@
  */
 
 /*
-This example runs tests on the SHA256 implementation to verify correct behaviour.
+This example runs tests on the SHA384 implementation to verify correct behaviour.
 */
 
 #include <Crypto.h>
-#include <SHA256.h>
+#include <SHA384.h>
 #include <string.h>
 
-#define HASH_SIZE 32
-#define BLOCK_SIZE 64
+#define HASH_SIZE 48
+#define BLOCK_SIZE 128
 
 struct TestHashVector
 {
     const char *name;
-    const char *key;
     const char *data;
     uint8_t hash[HASH_SIZE];
 };
 
-static TestHashVector const testVectorSHA256_1 = {
-    "SHA-256 #1",
-    0,
+static TestHashVector const testVectorSHA384_1 = {
+    "SHA-384 #1",
+    "",
+    {0x38, 0xb0, 0x60, 0xa7, 0x51, 0xac, 0x96, 0x38, 
+     0x4c, 0xd9, 0x32, 0x7e, 0xb1, 0xb1, 0xe3, 0x6a, 
+     0x21, 0xfd, 0xb7, 0x11, 0x14, 0xbe, 0x07, 0x43, 
+     0x4c, 0x0c, 0xc7, 0xbf, 0x63, 0xf6, 0xe1, 0xda, 
+     0x27, 0x4e, 0xde, 0xbf, 0xe7, 0x6f, 0x65, 0xfb, 
+     0xd5, 0x1a, 0xd2, 0xf1, 0x48, 0x98, 0xb9, 0x5b}
+};
+static TestHashVector const testVectorSHA384_2 = {
+    "SHA-384 #2",
     "abc",
-    {0xba, 0x78, 0x16, 0xbf, 0x8f, 0x01, 0xcf, 0xea,
-     0x41, 0x41, 0x40, 0xde, 0x5d, 0xae, 0x22, 0x23,
-     0xb0, 0x03, 0x61, 0xa3, 0x96, 0x17, 0x7a, 0x9c,
-     0xb4, 0x10, 0xff, 0x61, 0xf2, 0x00, 0x15, 0xad}
+    {0xcb, 0x00, 0x75, 0x3f, 0x45, 0xa3, 0x5e, 0x8b, 
+     0xb5, 0xa0, 0x3d, 0x69, 0x9a, 0xc6, 0x50, 0x07, 
+     0x27, 0x2c, 0x32, 0xab, 0x0e, 0xde, 0xd1, 0x63, 
+     0x1a, 0x8b, 0x60, 0x5a, 0x43, 0xff, 0x5b, 0xed, 
+     0x80, 0x86, 0x07, 0x2b, 0xa1, 0xe7, 0xcc, 0x23, 
+     0x58, 0xba, 0xec, 0xa1, 0x34, 0xc8, 0x25, 0xa7}
 };
-static TestHashVector const testVectorSHA256_2 = {
-    "SHA-256 #2",
-    0,
-    "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq",
-    {0x24, 0x8d, 0x6a, 0x61, 0xd2, 0x06, 0x38, 0xb8,
-     0xe5, 0xc0, 0x26, 0x93, 0x0c, 0x3e, 0x60, 0x39,
-     0xa3, 0x3c, 0xe4, 0x59, 0x64, 0xff, 0x21, 0x67,
-     0xf6, 0xec, 0xed, 0xd4, 0x19, 0xdb, 0x06, 0xc1}
-};
-static TestHashVector const testVectorHMAC_SHA256_1 = {
-    "HMAC-SHA-256 #1",
-    "",
-    "",
-    {0xb6, 0x13, 0x67, 0x9a, 0x08, 0x14, 0xd9, 0xec,
-     0x77, 0x2f, 0x95, 0xd7, 0x78, 0xc3, 0x5f, 0xc5,
-     0xff, 0x16, 0x97, 0xc4, 0x93, 0x71, 0x56, 0x53,
-     0xc6, 0xc7, 0x12, 0x14, 0x42, 0x92, 0xc5, 0xad}
-};
-static TestHashVector const testVectorHMAC_SHA256_2 = {
-    "HMAC-SHA-256 #2",
-    "key",
-    "The quick brown fox jumps over the lazy dog",
-    {0xf7, 0xbc, 0x83, 0xf4, 0x30, 0x53, 0x84, 0x24,
-     0xb1, 0x32, 0x98, 0xe6, 0xaa, 0x6f, 0xb1, 0x43,
-     0xef, 0x4d, 0x59, 0xa1, 0x49, 0x46, 0x17, 0x59,
-     0x97, 0x47, 0x9d, 0xbc, 0x2d, 0x1a, 0x3c, 0xd8}
+static TestHashVector const testVectorSHA384_3 = {
+    "SHA-384 #3",
+    "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmn"
+    "hijklmnoijklmnopjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu",
+    {0x09, 0x33, 0x0c, 0x33, 0xf7, 0x11, 0x47, 0xe8, 
+     0x3d, 0x19, 0x2f, 0xc7, 0x82, 0xcd, 0x1b, 0x47, 
+     0x53, 0x11, 0x1b, 0x17, 0x3b, 0x3b, 0x05, 0xd2, 
+     0x2f, 0xa0, 0x80, 0x86, 0xe3, 0xb0, 0xf7, 0x12, 
+     0xfc, 0xc7, 0xc7, 0x1a, 0x55, 0x7e, 0x2d, 0xb9, 
+     0x66, 0xc3, 0xe9, 0xfa, 0x91, 0x74, 0x60, 0x39}
 };
 
-SHA256 sha256;
+SHA384 sha384;
 
-byte buffer[128];
+byte buffer[BLOCK_SIZE + 2];
 
 bool testHash_N(Hash *hash, const struct TestHashVector *test, size_t inc)
 {
@@ -124,6 +118,30 @@ void testHash(Hash *hash, const struct TestHashVector *test)
         Serial.println("Failed");
 }
 
+void perfHash(Hash *hash)
+{
+    unsigned long start;
+    unsigned long elapsed;
+    int count;
+
+    Serial.print("Hashing ... ");
+
+    for (size_t posn = 0; posn < sizeof(buffer); ++posn)
+        buffer[posn] = (uint8_t)posn;
+
+    hash->reset();
+    start = micros();
+    for (count = 0; count < 250; ++count) {
+        hash->update(buffer, sizeof(buffer));
+    }
+    elapsed = micros() - start;
+
+    Serial.print(elapsed / (sizeof(buffer) * 250.0));
+    Serial.print("us per byte, ");
+    Serial.print((sizeof(buffer) * 250.0 * 1000000.0) / elapsed);
+    Serial.println(" bytes per second");
+}
+
 // Very simple method for hashing a HMAC inner or outer key.
 void hashKey(Hash *hash, const uint8_t *key, size_t keyLen, uint8_t pad)
 {
@@ -158,7 +176,7 @@ void testHMAC(Hash *hash, size_t keyLen)
 {
     uint8_t result[HASH_SIZE];
 
-    Serial.print("HMAC-SHA-256 keysize=");
+    Serial.print("HMAC-SHA-384 keysize=");
     Serial.print(keyLen);
     Serial.print(" ... ");
 
@@ -187,54 +205,6 @@ void testHMAC(Hash *hash, size_t keyLen)
         Serial.println("Failed");
 }
 
-void testHMAC(Hash *hash, const struct TestHashVector *test)
-{
-    uint8_t result[HASH_SIZE];
-
-    Serial.print(test->name);
-    Serial.print(" ... ");
-
-    hash->resetHMAC(test->key, strlen(test->key));
-    hash->update(test->data, strlen(test->data));
-    hash->finalizeHMAC(test->key, strlen(test->key), result, sizeof(result));
-
-    // If the first test passed, then try the all-in-one function too.
-    if (!memcmp(result, test->hash, HASH_SIZE)) {
-        memset(result, 0xAA, sizeof(result));
-        hmac<SHA256>(result, HASH_SIZE, test->key, strlen(test->key),
-                     test->data, strlen(test->data));
-    }
-
-    if (!memcmp(result, test->hash, HASH_SIZE))
-        Serial.println("Passed");
-    else
-        Serial.println("Failed");
-}
-
-void perfHash(Hash *hash)
-{
-    unsigned long start;
-    unsigned long elapsed;
-    int count;
-
-    Serial.print("Hashing ... ");
-
-    for (size_t posn = 0; posn < sizeof(buffer); ++posn)
-        buffer[posn] = (uint8_t)posn;
-
-    hash->reset();
-    start = micros();
-    for (count = 0; count < 500; ++count) {
-        hash->update(buffer, sizeof(buffer));
-    }
-    elapsed = micros() - start;
-
-    Serial.print(elapsed / (sizeof(buffer) * 500.0));
-    Serial.print("us per byte, ");
-    Serial.print((sizeof(buffer) * 500.0 * 1000000.0) / elapsed);
-    Serial.println(" bytes per second");
-}
-
 void perfFinalize(Hash *hash)
 {
     unsigned long start;
@@ -257,44 +227,6 @@ void perfFinalize(Hash *hash)
     Serial.println(" ops per second");
 }
 
-void perfHMAC(Hash *hash)
-{
-    unsigned long start;
-    unsigned long elapsed;
-    int count;
-
-    Serial.print("HMAC Reset ... ");
-
-    for (size_t posn = 0; posn < sizeof(buffer); ++posn)
-        buffer[posn] = (uint8_t)posn;
-
-    start = micros();
-    for (count = 0; count < 1000; ++count) {
-        hash->resetHMAC(buffer, hash->hashSize());
-    }
-    elapsed = micros() - start;
-
-    Serial.print(elapsed / 1000.0);
-    Serial.print("us per op, ");
-    Serial.print((1000.0 * 1000000.0) / elapsed);
-    Serial.println(" ops per second");
-
-    Serial.print("HMAC Finalize ... ");
-
-    hash->resetHMAC(buffer, hash->hashSize());
-    hash->update("abc", 3);
-    start = micros();
-    for (count = 0; count < 1000; ++count) {
-        hash->finalizeHMAC(buffer, hash->hashSize(), buffer, hash->hashSize());
-    }
-    elapsed = micros() - start;
-
-    Serial.print(elapsed / 1000.0);
-    Serial.print("us per op, ");
-    Serial.print((1000.0 * 1000000.0) / elapsed);
-    Serial.println(" ops per second");
-}
-
 void setup()
 {
     Serial.begin(9600);
@@ -302,27 +234,25 @@ void setup()
     Serial.println();
 
     Serial.print("State Size ...");
-    Serial.println(sizeof(SHA256));
+    Serial.println(sizeof(SHA384));
     Serial.println();
 
     Serial.println("Test Vectors:");
-    testHash(&sha256, &testVectorSHA256_1);
-    testHash(&sha256, &testVectorSHA256_2);
-    testHMAC(&sha256, &testVectorHMAC_SHA256_1);
-    testHMAC(&sha256, &testVectorHMAC_SHA256_2);
-    testHMAC(&sha256, (size_t)0);
-    testHMAC(&sha256, 1);
-    testHMAC(&sha256, HASH_SIZE);
-    testHMAC(&sha256, BLOCK_SIZE);
-    testHMAC(&sha256, BLOCK_SIZE + 1);
-    testHMAC(&sha256, sizeof(buffer));
+    testHash(&sha384, &testVectorSHA384_1);
+    testHash(&sha384, &testVectorSHA384_2);
+    testHash(&sha384, &testVectorSHA384_3);
+    testHMAC(&sha384, (size_t)0);
+    testHMAC(&sha384, 1);
+    testHMAC(&sha384, HASH_SIZE);
+    testHMAC(&sha384, BLOCK_SIZE);
+    testHMAC(&sha384, BLOCK_SIZE + 1);
+    testHMAC(&sha384, BLOCK_SIZE + 2);
 
     Serial.println();
 
     Serial.println("Performance Tests:");
-    perfHash(&sha256);
-    perfFinalize(&sha256);
-    perfHMAC(&sha256);
+    perfHash(&sha384);
+    perfFinalize(&sha384);
 }
 
 void loop()
