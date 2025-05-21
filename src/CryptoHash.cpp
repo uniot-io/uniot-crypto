@@ -20,11 +20,11 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#include "Hash.h"
+#include "CryptoHash.h"
 #include <string.h>
 
 /**
- * \class Hash Hash.h <Hash.h>
+ * \class Hash CryptoHash.h <CryptoHash.h>
  * \brief Abstract base class for cryptographic hash algorithms.
  *
  * \sa SHA224, SHA256, SHA384, SHA3_256, BLAKE2s
